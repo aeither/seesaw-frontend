@@ -58,7 +58,7 @@ function BottomPanel() {
       <Button isLoading={loading} onClick={() => addMargin(amount)}>
         Add Margin
       </Button>
-      <OpenPositionButton amount={amount} />
+      {/* <OpenPositionButton amount={amount} buttonType="buy"/> */}
       <ClosePositionButton />
       <PositionCard />
     </VStack>

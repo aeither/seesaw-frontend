@@ -21,9 +21,7 @@ import useSWR from "swr";
 function useSnapshots() {
   //Get Native Token Balance
   const fetcher = (url) => axios.get(url);
-  const { data, error } = useSWR(`/api/getSnapshots`, fetcher, {
-    refreshInterval: 10000,
-  });
+  const { data, error } = useSWR(`/api/getSnapshots`, fetcher);
   return {
     snapshots: data,
     snapshotsLoading: !error && !data,

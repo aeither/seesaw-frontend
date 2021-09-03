@@ -22,32 +22,22 @@ import {
   Tr,
   Th,
   Td,
+  NumberInput,
+  NumberInputField,
 } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
-import { terra, mainWallet } from "../utils/terra";
-import { walletAddr } from "../utils/constants";
-import { GetStaticProps } from "next";
-import axios from "axios";
+import useStateInfo from "../hooks/useStateInfo";
 
 import useAccountBalance from "../hooks/useAccountBalance";
+import { atom, useAtom } from "jotai";
+import OpenPositionButton from "./OpenPositionButton";
+
+const collateralAtom = atom(10);
+const leverageAtom = atom(2);
+const outputAmountAtom = atom((get) => get(collateralAtom) * get(leverageAtom));
 
 function AccountBalance() {
   const { ustBalance, ustBalanceLoading } = useAccountBalance();
 
-  // const [ustBalance, setUstBalance] = useState(0.00);
-  // useEffect(() => {
-  //   axios
-  //     .get(`/api/getAccountBalance`)
-  //     .then(function (response) {
-  //       // handle success
-  //       console.log("getAccountBalance", response);
-  //       setUstBalance(response.data.coins.uusd)
-  //     })
-  //     .catch(function (error) {
-  //       // handle error
-  //       console.log(error);
-  //     });
-  // }, []);
   return (
     <HStack w="100%" justify="space-between" py="2">
       <Text fontSize="sm" fontWeight="bold">
@@ -58,22 +48,21 @@ function AccountBalance() {
       ) : (
         <Text>{ustBalance.data.coins.uusd}</Text>
       )}
-      {/* <Text fontSize="sm">{ustBalance}$</Text> */}
     </HStack>
   );
 }
 
 function LeverageSlider() {
-  const [lvl, setLvl] = useState(2);
+  const [leverage, setLeverage] = useAtom(leverageAtom);
   return (
     <>
-      <Text fontSize="sm">LEVERAGE {lvl} X</Text>
+      <Text fontSize="sm">LEVERAGE {leverage} X</Text>
       <Slider
         defaultValue={2}
         min={1}
         max={10}
         step={1}
-        onChangeEnd={(val) => setLvl(val)}
+        onChangeEnd={(val) => setLeverage(val)}
       >
         <SliderTrack>
           <SliderFilledTrack bg="brand.100" />
@@ -84,55 +73,87 @@ function LeverageSlider() {
   );
 }
 
-function InputField({ title, currency }) {
-  const [value, setValue] = useState("");
-  const handleChange = (event) => setValue(event.target.value);
+function InputField() {
+  const { stateInfo, isStateInfoLoading } = useStateInfo();
+  const [collateral, setCollateral] = useAtom(collateralAtom);
+  const [outputAmount] = useAtom(outputAmountAtom);
+
+  const handleChange = (event) => setCollateral(event.target.value);
 
   return (
-    <Box py="2">
-      <Text mb="8px" fontSize="sm">
-        {title}: {value}
-      </Text>
-      <InputGroup size="md">
-        <Input
-          value={value}
-          onChange={handleChange}
-          placeholder="0.0"
-          size="sm"
-        />
-        <InputRightElement width="4.5rem">
-          <Text h="1.75rem" fontSize="sm">
-            {currency}
-          </Text>
-        </InputRightElement>
-      </InputGroup>
+    <Box>
+      <Box py="2">
+        <Text mb="8px" fontSize="sm">
+          COLLATERAL
+        </Text>
+        <NumberInput defaultValue={collateral} size="sm">
+          <NumberInputField
+            onChange={handleChange}
+            // placeholder="0.0"
+            // size="sm"
+          />
+          <InputRightElement width="4.5rem">
+            <Text h="1.75rem" fontSize="sm">
+              UST
+            </Text>
+          </InputRightElement>
+        </NumberInput>
+      </Box>
+      <Box py="2">
+        <Text mb="8px" fontSize="sm">
+          AMOUNT: {outputAmount} UST
+        </Text>
+        <InputGroup size="md">
+          {isStateInfoLoading ? (
+            <Input
+              value={0.0}
+              onChange={handleChange}
+              placeholder="0.0"
+              size="sm"
+            />
+          ) : (
+            <Input
+              isReadOnly
+              value={(
+                outputAmount / parseInt(stateInfo.data.market_price)
+              ).toFixed(5)}
+              onChange={handleChange}
+              placeholder="0.0"
+              size="sm"
+            />
+          )}
+          {/* <Input
+            value={outputAmount}
+            onChange={handleChange}
+            placeholder="0.0"
+            size="sm"
+          /> */}
+          <InputRightElement width="4.5rem">
+            <Text h="1.75rem" fontSize="sm">
+              LUNA
+            </Text>
+          </InputRightElement>
+        </InputGroup>
+      </Box>
     </Box>
   );
 }
 
-function SubmitOrder({ buttonType }) {
-  const buttonColor = buttonType == "buy" ? "#14C598" : "#F1463E";
-  const buttonText = buttonType == "buy" ? "BUY / LONG" : "SELL / SHORT";
-  return (
-    <Box pt="4">
-      <Button
-        display="block"
-        w="100%"
-        background={buttonColor}
-        _hover={{ filter: "brightness(85%)" }}
-        _active={{
-          bg: buttonColor,
-          transform: "scale(0.98)",
-          borderColor: "#bec3c9",
-        }}
-      >
-        {buttonText}
-      </Button>
-    </Box>
-  );
-}
+// function SubmitOrder({ buttonType }) {
+//   const buttonColor = buttonType == "buy" ? "#14C598" : "#F1463E";
+//   const buttonText = buttonType == "buy" ? "BUY / LONG" : "SELL / SHORT";
+
+//   return (
+//     <Box pt="4">
+//       <OpenPositionButton amount={amount} buttonType />
+//     </Box>
+//   );
+// }
 
 function BuySellTab() {
+  const [collateral] = useAtom(collateralAtom);
+  const [outputAmount] = useAtom(outputAmountAtom);
+
   return (
     <Tabs w="100%" isFitted>
       <TabList mb="1em">
@@ -141,16 +162,22 @@ function BuySellTab() {
       </TabList>
       <TabPanels>
         <TabPanel>
-          <InputField title="AMOUNT" currency="LUNA" />
-          <InputField title="COLLATERAL" currency="UST" />
+          <InputField />
           <LeverageSlider />
-          <SubmitOrder buttonType="buy" />
+          <OpenPositionButton
+            collateral={collateral}
+            amount={outputAmount}
+            buttonType="buy"
+          />
         </TabPanel>
         <TabPanel>
-          <InputField title="AMOUNT" currency="LUNA" />
-          <InputField title="COLLATERAL" currency="UST" />
+          <InputField />
           <LeverageSlider />
-          <SubmitOrder buttonType="sell" />
+          <OpenPositionButton
+            collateral={collateral}
+            amount={outputAmount}
+            buttonType="buy"
+          />
         </TabPanel>
       </TabPanels>
     </Tabs>
