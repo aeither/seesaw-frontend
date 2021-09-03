@@ -13,6 +13,6 @@ import { bankAddr, vammAddr } from "../../utils/constants";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const poolUUsd = await queryNativeTokenBalance(terra, bankAddr, "uusd");
-  console.log(poolUUsd);
+  // console.log(poolUUsd);
   res.status(200).json(poolUUsd);
 };

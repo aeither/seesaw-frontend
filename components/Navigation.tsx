@@ -16,7 +16,6 @@ import {
   ModalCloseButton,
   useDisclosure,
 } from "@chakra-ui/react";
-import NextLink from "next/link";
 
 function Navigation() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -24,11 +23,11 @@ function Navigation() {
   return (
     <HStack w="100%" px="4" pt="2" pb="8" justify="space-between">
       <HStack p="2">
-        <Image
+        {/* <Image
           boxSize="35px"
           src="https://upload.wikimedia.org/wikipedia/commons/1/1e/RPC-JP_Logo.png"
-        />
-        <Text fontWeight="bold">Perpetual on Terra</Text>
+        /> */}
+        <Text fontWeight="bold">SeeSaw Perpetual</Text>
       </HStack>
       {/* <HStack>
         <NextLink href="/" passHref>

@@ -6,7 +6,7 @@ import BottomPanel from "../components/BottomPanel";
 import { Stack, Button } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
 
-const Chart = dynamic(() => import("./chart"), {
+const CustomChart = dynamic(() => import("../components/CustomChart"), {
   ssr: false,
 });
 export default function Home() {
@@ -22,7 +22,7 @@ export default function Home() {
       <Stack direction="row" justify="center" spacing="2">
         <Stack direction="column">
           {/* <MainChart /> */}
-        <Chart/>
+        <CustomChart/>
           <BottomPanel />
         </Stack>
         <TradingPanel />

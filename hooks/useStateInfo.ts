@@ -2,17 +2,17 @@ import { useState, useEffect } from "react";
 import axios, { AxiosRequestConfig } from "axios";
 import useSWR from "swr";
 
-function useNativeTokenBalance() {
+function useStateInfo() {
   //Get Native Token Balance
   const fetcher = (url) => axios.get(url);
-  const { data, error } = useSWR(`/api/getNativeTokenBalance`, fetcher, {
+  const { data, error } = useSWR(`/api/getStateInfo`, fetcher, {
     refreshInterval: 10000,
   });
   return {
-    tokenBalance: data,
-    isTokenBalanceLoading: !error && !data,
-    isTokenBalanceError: error,
+    stateInfo: data,
+    isStateInfoLoading: !error && !data,
+    isStateInfoError: error,
   };
 }
 
-export default useNativeTokenBalance;
+export default useStateInfo;

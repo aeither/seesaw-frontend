@@ -29,27 +29,36 @@ import { walletAddr } from "../utils/constants";
 import { GetStaticProps } from "next";
 import axios from "axios";
 
+import useAccountBalance from "../hooks/useAccountBalance";
+
 function AccountBalance() {
-  const [ustBalance, setUstBalance] = useState(0.00);
-  useEffect(() => {
-    axios
-      .get(`/api/getAccountBalance`)
-      .then(function (response) {
-        // handle success
-        console.log("getAccountBalance", response);
-        setUstBalance(response.data.coins.uusd)
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      });
-  }, []);
+  const { ustBalance, ustBalanceLoading } = useAccountBalance();
+
+  // const [ustBalance, setUstBalance] = useState(0.00);
+  // useEffect(() => {
+  //   axios
+  //     .get(`/api/getAccountBalance`)
+  //     .then(function (response) {
+  //       // handle success
+  //       console.log("getAccountBalance", response);
+  //       setUstBalance(response.data.coins.uusd)
+  //     })
+  //     .catch(function (error) {
+  //       // handle error
+  //       console.log(error);
+  //     });
+  // }, []);
   return (
     <HStack w="100%" justify="space-between" py="2">
       <Text fontSize="sm" fontWeight="bold">
         UST Balance
       </Text>
-      <Text fontSize="sm">{ustBalance}$</Text>
+      {ustBalanceLoading ? (
+        <Text>Loading balance...</Text>
+      ) : (
+        <Text>{ustBalance.data.coins.uusd}</Text>
+      )}
+      {/* <Text fontSize="sm">{ustBalance}$</Text> */}
     </HStack>
   );
 }
@@ -205,14 +214,12 @@ function HistoryTab() {
   );
 }
 
-function TradingPanel({ accountInfo }) {
-  console.log("accountInfo", accountInfo);
+function TradingPanel() {
   return (
     <VStack w="400px" background="#141C33" px="4" py="2">
       <AccountBalance />
       <BuySellTab />
       <HistoryTab />
-      {/* {accountInfo.length > 0 ? accountInfo.coins.uusd : 0.0} */}
     </VStack>
   );
 }
