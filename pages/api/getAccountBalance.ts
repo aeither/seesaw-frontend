@@ -1,18 +1,16 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import { mainWallet, execute, terra } from "../../utils/terra";
 import { NextApiRequest, NextApiResponse } from "next";
-import { bankAddr, vammAddr } from "../../utils/constants";
+import { walletAddr } from "../../utils/constants";
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  const { amount } = req.query;
-  const hash = await execute(
-    mainWallet,
-    bankAddr,
-    {
-      deposit_stable: {
-        market_addr: vammAddr,
-      },
+  const info = await terra.auth.accountInfo(walletAddr);
+
+  const accountInfo = {
+    address: info.address,
+    coins: {
+      uusd: info.coins.get("uusd").amount,
     },
-    `${amount}uusd`
-  );
-  res.status(200).json(hash);
+  };
+
+  res.status(200).json(accountInfo);
 };

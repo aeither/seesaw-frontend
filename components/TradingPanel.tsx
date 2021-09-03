@@ -23,15 +23,33 @@ import {
   Th,
   Td,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { terra, mainWallet } from "../utils/terra";
+import { walletAddr } from "../utils/constants";
+import { GetStaticProps } from "next";
+import axios from "axios";
 
 function AccountBalance() {
+  const [ustBalance, setUstBalance] = useState(0.00);
+  useEffect(() => {
+    axios
+      .get(`/api/getAccountBalance`)
+      .then(function (response) {
+        // handle success
+        console.log("getAccountBalance", response);
+        setUstBalance(response.data.coins.uusd)
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      });
+  }, []);
   return (
     <HStack w="100%" justify="space-between" py="2">
       <Text fontSize="sm" fontWeight="bold">
         UST Balance
       </Text>
-      <Text fontSize="sm">0.00$</Text>
+      <Text fontSize="sm">{ustBalance}$</Text>
     </HStack>
   );
 }
@@ -187,12 +205,14 @@ function HistoryTab() {
   );
 }
 
-function TradingPanel() {
+function TradingPanel({ accountInfo }) {
+  console.log("accountInfo", accountInfo);
   return (
     <VStack w="400px" background="#141C33" px="4" py="2">
       <AccountBalance />
       <BuySellTab />
       <HistoryTab />
+      {/* {accountInfo.length > 0 ? accountInfo.coins.uusd : 0.0} */}
     </VStack>
   );
 }
