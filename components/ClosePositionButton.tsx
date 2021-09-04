@@ -15,7 +15,7 @@ function ClosePositionButton() {
     });
 
     axios
-      .get(`/api/closePosition/`)
+      .get(`/api/closePosition/`, { timeout: 60000 })
       .then(function (response) {
         // handle success
         console.log(response);
@@ -29,11 +29,17 @@ function ClosePositionButton() {
       .catch(function (error) {
         // handle error
         console.log(error);
+        setLoading(false);
+        toast({
+          title: `closePosition Failed, Logs for more info`,
+          status: "error",
+          isClosable: true,
+        });
       });
   }
 
   return (
-    <Button isLoading={loading} onClick={() => closePosition()}>
+    <Button size="sm" isLoading={loading} onClick={() => closePosition()}>
       Close Position
     </Button>
   );

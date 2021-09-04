@@ -21,7 +21,7 @@ function OpenPositionButton({ collateral, amount, buttonType }) {
     });
 
     await axios
-      .get(`/api/addMargin/?amount=${amount}`)
+      .get(`/api/addMargin/?amount=${amount}`, { timeout: 60000 })
       .then(function (response) {
         // handle success
         console.log(response);
@@ -61,27 +61,53 @@ function OpenPositionButton({ collateral, amount, buttonType }) {
       .catch(function (error) {
         // handle error
         console.log(error);
+        setLoading(false);
+        toast({
+          title: `openPosition Failed, Logs for more info`,
+          status: "error",
+          isClosable: true,
+        });
       });
   }
   return (
-    <Button
-      display="block"
-      w="100%"
-      background={buttonColor}
-      _hover={{ filter: "brightness(85%)" }}
-      _active={{
-        bg: buttonColor,
-        transform: "scale(0.98)",
-        borderColor: "#bec3c9",
-      }}
-      isLoading={loading}
-      onClick={async () => {
-        await addMargin(collateral);
-        await openPosition(amount);
-      }}
-    >
-      Open Position
-    </Button>
+    <>
+      <Button
+        display="block"
+        w="100%"
+        background={buttonColor}
+        _hover={{ filter: "brightness(85%)" }}
+        _active={{
+          bg: buttonColor,
+          transform: "scale(0.98)",
+          borderColor: "#bec3c9",
+        }}
+        isLoading={loading}
+        onClick={async () => {
+          await addMargin(collateral);
+          await openPosition(amount);
+        }}
+      >
+        {buttonText}
+      </Button>
+      {/* <Button
+        mt="2"
+        display="block"
+        w="100%"
+        background={buttonColor}
+        _hover={{ filter: "brightness(85%)" }}
+        _active={{
+          bg: buttonColor,
+          transform: "scale(0.98)",
+          borderColor: "#bec3c9",
+        }}
+        isLoading={loading}
+        onClick={async () => {
+          await openPosition(amount);
+        }}
+      >
+        Only Open
+      </Button> */}
+    </>
   );
 }
 

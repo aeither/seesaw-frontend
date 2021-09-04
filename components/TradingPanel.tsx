@@ -15,13 +15,7 @@ import {
   TabPanel,
   HStack,
   VStack,
-  Button,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
+  Divider,
   NumberInput,
   NumberInputField,
 } from "@chakra-ui/react";
@@ -30,6 +24,9 @@ import useStateInfo from "../hooks/useStateInfo";
 import useAccountBalance from "../hooks/useAccountBalance";
 import { atom, useAtom } from "jotai";
 import OpenPositionButton from "./OpenPositionButton";
+import StateCard from "./StateCard";
+import ContractBalance from "./ContractBalance";
+import AddMarginCard from "./AddMarginCard";
 
 const collateralAtom = atom(10);
 const leverageAtom = atom(2);
@@ -176,65 +173,8 @@ function BuySellTab() {
           <OpenPositionButton
             collateral={collateral}
             amount={outputAmount}
-            buttonType="buy"
+            buttonType="sell"
           />
-        </TabPanel>
-      </TabPanels>
-    </Tabs>
-  );
-}
-
-function PositionsTable() {
-  return (
-    <Table size="sm">
-      <Thead>
-        <Tr>
-          <Th>Symbol</Th>
-          <Th>PNL</Th>
-          <Th>Close</Th>
-        </Tr>
-      </Thead>
-      <Tbody>
-        <Tr>
-          <Td>LUNA/UST</Td>
-          <Td>+12$</Td>
-          <Td>
-            <Button size="sm">Close</Button>
-          </Td>
-        </Tr>
-        <Tr>
-          <Td>LUNA/UST</Td>
-          <Td>+12$</Td>
-          <Td>
-            <Button size="sm">Close</Button>
-          </Td>
-        </Tr>
-        <Tr>
-          <Td>LUNA/UST</Td>
-          <Td>+12$</Td>
-          <Td>
-            <Button size="sm">Close</Button>
-          </Td>
-        </Tr>
-      </Tbody>
-    </Table>
-  );
-}
-
-function HistoryTab() {
-  return (
-    <Tabs w="100%" isFitted>
-      <TabList mb="1em">
-        <Tab fontSize="sm">Positions</Tab>
-        <Tab fontSize="sm">History</Tab>
-        <Tab fontSize="sm">Funding</Tab>
-      </TabList>
-      <TabPanels>
-        <TabPanel h="160px" overflowY="scroll">
-          <PositionsTable />
-        </TabPanel>
-        <TabPanel h="160px" overflowY="scroll">
-          <PositionsTable />
         </TabPanel>
       </TabPanels>
     </Tabs>
@@ -246,7 +186,12 @@ function TradingPanel() {
     <VStack w="400px" background="#141C33" px="4" py="2">
       <AccountBalance />
       <BuySellTab />
-      <HistoryTab />
+      {/* <HistoryTab /> */}
+      <Divider />
+      <StateCard />
+      <Divider />
+      <ContractBalance />
+      <AddMarginCard />
     </VStack>
   );
 }

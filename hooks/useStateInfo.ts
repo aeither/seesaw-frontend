@@ -6,7 +6,7 @@ function useStateInfo() {
   //Get Native Token Balance
   const fetcher = (url) => axios.get(url);
   const { data, error } = useSWR(`/api/getStateInfo`, fetcher, {
-    refreshInterval: 10000,
+    refreshInterval: 20000,
   });
   return {
     stateInfo: data,

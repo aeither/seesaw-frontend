@@ -7,14 +7,15 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import useStateInfo from "../hooks/useStateInfo";
+import useNativeTokenBalance from "../hooks/useNativeTokenBalance";
 
 function StateCard() {
   const { stateInfo, isStateInfoLoading } = useStateInfo();
 
-  return isStateInfoLoading ? (
+  return isStateInfoLoading  ? (
     <Text>Loading State Info...</Text>
   ) : (
-    <VStack>
+    <VStack align="start">
       <Text>
         Funding:{" "}
         {stateInfo.data.funding_fee.who_pays == "l_o_n_g"

@@ -7,7 +7,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const open_res = await execute(mainWallet, bankAddr, {
     open_position: {
       market_addr: vammAddr,
-      open_value: {amount},
+      open_value: amount,
       direction: "l_o_n_g",
     },
   });
