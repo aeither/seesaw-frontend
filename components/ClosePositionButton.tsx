@@ -40,7 +40,7 @@ function ClosePositionButton() {
 
   return (
     <Button size="sm" isLoading={loading} onClick={() => closePosition()}>
-      Close Position
+      Close
     </Button>
   );
 }

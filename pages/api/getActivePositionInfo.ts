@@ -21,6 +21,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       user_addr: walletAddr,
     },
   });
-  // console.log("position_res", position_res);
+  console.log("position_res", position_res);
   res.status(200).json(position_res);
 };

@@ -26,6 +26,10 @@ function PositionCard() {
       <Td>{positionInfo.data.positionSize}</Td>
       <Td>{positionInfo.data.pnl}</Td>
       <Td>
+        {positionInfo.data.funding.amount}{" "}
+        {positionInfo.data.funding.sign === "positive" ? "+" : "-"}
+      </Td>
+      <Td>
         <ClosePositionButton />
       </Td>
     </Tr>
